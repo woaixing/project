@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"> <!-- 确保字符编码为 UTF-8 -->
+    <title>仪表盘</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { width: 800px; margin: 50px auto; }
+        h2 { color: #333; }
+        p { font-size: 1.2em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>欢迎来到仪表盘</h2>
+        <p>客户数量: <span id="customerCount"></span></p>
+        <p>订单数量: <span id="orderCount"></span></p>
+    </div>
+
+    <script>
+        function fetchStats(apiUrl, spanId) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', apiUrl, true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                        document.getElementById(spanId).innerText = response.data.customer_count;
+                        document.getElementById('orderCount').innerText = response.data.order_count;
+                    } else {
+                        document.getElementById(spanId).innerText = '获取数据失败';
+                    }
+                }
+            };
+            xhr.send();
+        }
+
+        window.onload = function () {
+            fetchStats('../api/statistics/get_statistics.php', 'customerCount');
+        };
+    </script>
+</body>
+</html>
